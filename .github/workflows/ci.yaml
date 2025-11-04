@@ -30,7 +30,7 @@ jobs:
         python -m pip install --upgrade pip
         # 🚨 CORREÇÃO: Define a variável de ambiente aqui, garantindo que ela esteja disponível 
         # antes de qualquer importação do Flask/SQLAlchemy
-        echo "SQLALCHEMY_DATABASE_URI=sqlite:///:memory:" >> $GITHUB_ENV
+        echo "DATABASE_URL=sqlite:///:memory:" >> $GITHUB_ENV
         
         # Instala todas as dependências do requirements.txt
         pip install -r requirements.txt
