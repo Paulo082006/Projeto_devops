@@ -34,7 +34,10 @@ jobs:
 
     - name: 🧪 Rodar Testes com Pytest
       run: |
-        # Configura as variáveis de ambiente necessárias (se houver, como SECRET_KEY, etc.)
+        # Injeta a variável de ambiente necessária ANTES da execução do pytest.
+        # Isso satisfaz o requisito de 'SQLALCHEMY_DATABASE_URI' quando o Flask é inicializado no main.py.
+        # Estamos usando a URI em memória para não depender de um banco de dados real no CI.
+        export SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"
         
         # Executa o pytest. O --cov gera o relatório de cobertura.
         pytest --cov=. --cov-report=term
