@@ -1,7 +1,5 @@
 name: CI - Testes Pytest
 
-# O workflow será executado em pushes para 'dev' e 'main', 
-# e em Pull Requests (PRs) direcionados a 'dev' e 'main'.
 on:
   push:
     branches: [ "dev", "main" ] 
@@ -11,11 +9,9 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest # O sistema operacional onde o código será executado
+    runs-on: ubuntu-latest 
 
-    # Removemos o bloco 'env' aqui para evitar conflitos de escopo
-    # A variável será injetada explicitamente no passo de instalação.
-    
+
     steps:
     - name: ⬇️ Checkout do Código
       uses: actions/checkout@v4
@@ -28,18 +24,14 @@ jobs:
     - name: 📦 Instalar Dependências e Configurar URI de Teste
       run: |
         python -m pip install --upgrade pip
-        # 🚨 CORREÇÃO: Define a variável de ambiente aqui, garantindo que ela esteja disponível 
-        # antes de qualquer importação do Flask/SQLAlchemy
+
         echo "DATABASE_URL=sqlite:///:memory:" >> $GITHUB_ENV
-        
-        # Instala todas as dependências do requirements.txt
+     
         pip install -r requirements.txt
         
-        # Força o upgrade do pytest-flask e do pytest (para garantir a compatibilidade com Flask 3.x)
+      
         pip install --upgrade pytest-flask pytest pytest-cov
 
     - name: 🧪 Rodar Testes com Pytest
       run: |
-        # Agora, a variável SQLALCHEMY_DATABASE_URI está definida no ambiente ($GITHUB_ENV) 
-        # antes que o Pytest comece a coletar os testes.
         pytest --cov=. --cov-report=term
