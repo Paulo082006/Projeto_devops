@@ -14,6 +14,9 @@ CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://1
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 db.init_app(app)
 
+with app.app_context():
+    db.create_all()
+    
 # Registro das Blueprints
 app.register_blueprint(clientes_bp)
 

@@ -1,0 +1,63 @@
+
+version: '3.9'
+
+services:
+
+  web:
+    # 1. REMOVEMOS O 'build: .' E O 'volumes:'
+    # 2. ADICIONAMOS A IMAGEM DO DOCKER HUB
+    build: .
+    
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - .:/app
+
+    environment:
+
+      - DATABASE_URL=postgresql://postgres:sua_senha_segura@db:5432/meu_app_db
+
+      - FLASK_APP=main.py
+
+      - FLASK_ENV=development
+
+    command: ["flask", "run", "--host=0.0.0.0"]
+
+    depends_on:
+      - db
+
+    networks:
+      - app-net
+
+    restart: on-failure
+
+
+  db:
+
+    image: postgres:15-alpine
+
+    environment:
+      POSTGRES_DB: meu_app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sua_senha_segura
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - app-net
+
+    restart: always
+
+
+networks:
+  app-net:
+    driver: bridge
+
+
+volumes:
+  postgres_data:
