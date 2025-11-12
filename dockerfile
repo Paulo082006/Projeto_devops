@@ -14,4 +14,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 5. Copie o resto do seu código (ex: app.py)
 COPY . .
 
+CMD ["flask", "main.py"]
 # O comando para rodar a aplicação será dado pelo docker-compose.yml
