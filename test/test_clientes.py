@@ -1,12 +1,10 @@
 import json
 import pytest
 
-# As importações que você forneceu
 from db import db
 from main import app
 from models.clientes import Cliente
 
-# Dados de exemplo que serão usados para inserção em testes
 CLIENTE_DATA = {
     'nome': 'Novo Cliente Teste', 
     'telefone': '(11) 98765-4321', 
@@ -24,30 +22,28 @@ def client():
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:' 
     })
 
-    # 2. Inicializa o cliente de teste
+  
     with app.test_client() as client:
-        # 3. Cria o contexto de aplicação para operações de banco de dados
+       
         with app.app_context():
             
-            # Cria as tabelas antes de cada teste
             db.create_all() 
-        
-        # 4. O cliente é retornado para a função de teste
+    
         yield client
             
-        # 5. Destrói as tabelas após cada teste (limpeza)
+        
         with app.app_context():
             db.drop_all()
 
 @pytest.fixture
 def setup_cliente(client):
-    """Fixture auxiliar que insere um cliente e retorna seus dados."""
+   
     response = client.post(
         '/clientes', 
         data=json.dumps(CLIENTE_DATA), 
         content_type='application/json'
     )
-    # Retorna o dicionário do cliente criado, incluindo o ID gerado
+    
     return response.get_json()['cliente']
 
 
