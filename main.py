@@ -6,6 +6,7 @@ from db import db
 import os
 
 from routes.clientes import clientes_bp
+from routes.jogos import jogos_bp
 
 load_dotenv()
 
@@ -27,6 +28,7 @@ with app.app_context():
 
 # Registro das Blueprints
 app.register_blueprint(clientes_bp)
+app.register_blueprint(jogos_bp)
 
 
 if __name__ == "__main__":
