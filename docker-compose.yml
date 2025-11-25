@@ -1,0 +1,70 @@
+services:
+
+  web:
+    # Removemos o build: . e o volumes: .:/app para usar a imagem pronta
+    build: .
+    # image: paulo2006/faculdadenovaromadevops:1.0 
+    
+    ports:
+      - "5000:5000"
+
+    environment:
+      # Use variáveis de ambiente para a senha, não strings hardcoded em arquivos
+      - DATABASE_URL=postgresql://postgres:sua_senha_segura@db:5432/meu_app_db
+      - FLASK_APP=main.py
+      - FLASK_ENV=development
+
+    command: ["flask", "run", "--host=0.0.0.0"]
+
+    depends_on:
+      - db
+
+    networks:
+      - app-net
+
+    restart: on-failure
+  prometheus:
+    image: prom/prometheus:v3.7.3
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-net
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000" # Porta padrão do Grafana   
+    networks:
+      - app-net
+
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: meu_app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sua_senha_segura # Deve ser igual ao DATABASE_URL
+    
+    # Removido o mapeamento 5432:5432 para maior segurança
+    # ports: 
+    #   - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - app-net
+
+    restart: always
+
+
+networks:
+  app-net:
+    driver: bridge
+
+
+volumes:
+  postgres_data:

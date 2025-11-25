@@ -1,0 +1,14 @@
+# Arquivo: .dockerignore
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Ambiente virtual (nunca deve ir para a imagem)
+.venv
+venv/
+
+# Arquivos do Git e Github
+.git
+.github
+.gitignore
